@@ -66,8 +66,9 @@ struct proto_caster_load_impl {
     // The incoming object is not a compatible fast_cpp_proto, so check whether
     // it is otherwise compatible, then serialize it and deserialize into a
     // native C++ proto type.
-    if (!pybind11_protobuf::PyProtoIsCompatible(src,
-                                                ProtoType::GetDescriptor())) {
+    // We need to undo the following commit to make this code compile (probably because we're using an old protobuf version in Ubuntu 20.04):
+    // https://github.com/pybind/pybind11_protobuf/commit/505e54e81f77ae8f684630ba276af5cd029f7606
+    if (!pybind11_protobuf::PyProtoIsCompatible(src, ProtoType::descriptor())) {
       return false;
     }
     owned = std::unique_ptr<ProtoType>(new ProtoType());
